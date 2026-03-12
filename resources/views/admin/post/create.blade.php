@@ -25,7 +25,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.post.store') }}" method="POST" class="space-y-4">
+            <form action="{{ route('admin.post.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
                     <label class="text-sm font-semibold" for="title">Заголовок</label>
@@ -43,6 +43,10 @@
                             <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold" for="preview">Превью поста (до 2MB)</label>
+                    <input class="mt-1 ui-input" type="file" name="preview" id="preview" accept="image/*">
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button class="ui-button-primary" type="submit">Создать</button>

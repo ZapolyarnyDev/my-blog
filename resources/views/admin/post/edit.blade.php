@@ -25,7 +25,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.post.update', $post) }}" method="POST" class="space-y-4">
+            <form action="{{ route('admin.post.update', $post) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
@@ -44,6 +44,13 @@
                             <option value="{{ $tag->id }}" @selected((int) old('tags', optional($postTag)->id) === $tag->id)>{{ $tag->name }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold" for="preview">Превью поста (до 2MB)</label>
+                    <input class="mt-1 ui-input" type="file" name="preview" id="preview" accept="image/*">
+                    @if($post->preview_path)
+                        <img class="mt-3 h-36 w-full rounded-lg object-cover" src="{{ asset('storage/' . $post->preview_path) }}" alt="{{ $post->title }}">
+                    @endif
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <button class="ui-button-primary" type="submit">Сохранить</button>

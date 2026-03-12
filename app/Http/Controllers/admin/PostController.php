@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -45,12 +46,14 @@ class PostController extends Controller
         $temp = 1500;
         $wordsLength = mb_strlen(strip_tags($request->description));
         $minutes = ceil($wordsLength / $temp);
+        $previewPath = $request->file('preview')?->store('posts/previews', 'public');
 
         $model = Post::query()->create([
             'title' => $request->title,
             'description' => $request->description,
             'duration' => $minutes,
-            'author_id' => Auth::id()
+            'author_id' => Auth::id(),
+            'preview_path' => $previewPath,
         ]);
 
         $model->tags()->attach([$request->tags]);
@@ -86,17 +89,27 @@ class PostController extends Controller
             'title' => ['required', 'max:255'],
             'description' => ['required'],
             'tags' => ['required', 'exists:tags,id'],
+            'preview' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $temp = 1500;
         $wordsLength = mb_strlen(strip_tags($validated['description']));
         $minutes = ceil($wordsLength / $temp);
 
+        if ($request->hasFile('preview')) {
+            if ($post->preview_path) {
+                Storage::disk('public')->delete($post->preview_path);
+            }
+
+            $post->preview_path = $request->file('preview')->store('posts/previews', 'public');
+        }
+
         $post->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
             'duration' => $minutes,
             'author_id' => Auth::id(),
+            'preview_path' => $post->preview_path,
         ]);
 
         $post->tags()->sync([$validated['tags']]);
@@ -109,6 +122,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->preview_path) {
+            Storage::disk('public')->delete($post->preview_path);
+        }
+
         $post->delete();
 
         return to_route('admin.post.index');

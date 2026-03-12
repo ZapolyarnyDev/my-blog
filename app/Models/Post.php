@@ -10,7 +10,8 @@ class Post extends Model
         'title',
         'description',
         'duration',
-        'author_id'
+        'author_id',
+        'preview_path',
     ];
 
 

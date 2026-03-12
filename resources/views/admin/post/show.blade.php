@@ -18,6 +18,9 @@
                 <span class="ui-chip">Пост</span>
                 <span>Время чтения: {{ $post->duration }} мин</span>
             </div>
+            @if($post->preview_path)
+                <img class="mb-4 h-64 w-full rounded-lg object-cover" src="{{ asset('storage/' . $post->preview_path) }}" alt="{{ $post->title }}">
+            @endif
             <h1 class="text-2xl font-semibold">{{ $post->title }}</h1>
             <div class="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">{{ $post->description }}</div>
         </div>
