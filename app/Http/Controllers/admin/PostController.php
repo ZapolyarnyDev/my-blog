@@ -62,10 +62,8 @@ class PostController extends Controller
      * Display the specified resource.
      */
     public function show(Post $post)
-    {   
-        return view('admin.post.show', [
-            'post' => $post
-        ]);
+    {
+        return view('admin.post.show', compact('post'));
     }
 
     /**
@@ -73,7 +71,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        $postTag = $post->tags()->first();
+        $allTags = Tag::all();
+
+        return view('admin.post.edit', compact('post', 'postTag', 'allTags'));
     }
 
     /**
@@ -81,7 +82,26 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $validated = $request->validate([
+            'title' => ['required', 'max:255'],
+            'description' => ['required'],
+            'tags' => ['required', 'exists:tags,id'],
+        ]);
+
+        $temp = 1500;
+        $wordsLength = mb_strlen(strip_tags($validated['description']));
+        $minutes = ceil($wordsLength / $temp);
+
+        $post->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'duration' => $minutes,
+            'author_id' => Auth::id(),
+        ]);
+
+        $post->tags()->sync([$validated['tags']]);
+
+        return to_route('admin.post.index');
     }
 
     /**

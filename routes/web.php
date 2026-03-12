@@ -16,9 +16,11 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/admin')->middleware(['role:admin,editor'])->group(function () {
         Route::prefix('posts')->name('admin.')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('post.index');
-            Route::get('/{post}', [PostController::class, 'show'])->name('post.show');
             Route::get('/create', [PostController::class, 'create'])->name('post.create');
             Route::post('/create', [PostController::class, 'store'])->name('post.store');
+            Route::get('/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
+            Route::put('/{post}', [PostController::class, 'update'])->name('post.update');
+            Route::get('/{post}', [PostController::class, 'show'])->name('post.show');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('post.delete');
         });
     });
