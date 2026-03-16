@@ -3,6 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -27,5 +29,29 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_new_users_can_register_with_avatar(): void
+    {
+        Storage::fake('public');
+
+        $response = $this->post('/register', [
+            'name' => 'Avatar User',
+            'email' => 'avatar@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'avatar' => UploadedFile::fake()->createWithContent(
+                'avatar.png',
+                base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=')
+            ),
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard', absolute: false));
+
+        $avatarPath = auth()->user()->avatar_path;
+
+        $this->assertNotNull($avatarPath);
+        Storage::disk('public')->assertExists($avatarPath);
     }
 }
