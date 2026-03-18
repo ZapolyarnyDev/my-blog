@@ -5,18 +5,18 @@
 @section('content')
     <div class="mx-auto max-w-3xl px-4 py-10">
         <div class="ui-toolbar mb-6 flex flex-wrap items-center justify-between gap-3">
-            <div class="text-lg font-semibold">Админка постов</div>
+            <div class="text-lg font-semibold">Posts Admin</div>
             <div class="flex flex-wrap gap-2">
-                <a class="ui-button" href="{{ route('admin.post.index') }}">Список</a>
-                <a class="ui-button" href="{{ route('admin.post.edit', ['post' => $post]) }}">Редактировать</a>
-                <a class="ui-button-primary" href="{{ route('admin.post.create') }}">Новый пост</a>
+                <a class="ui-button" href="{{ route('admin.post.index') }}">List</a>
+                <a class="ui-button" href="{{ route('admin.post.edit', ['post' => $post]) }}">Edit</a>
+                <a class="ui-button-primary" href="{{ route('admin.post.create') }}">New post</a>
             </div>
         </div>
 
         <div class="ui-panel">
             <div class="mb-3 flex flex-wrap items-center gap-3 text-xs text-slate-600">
-                <span class="ui-chip">Пост</span>
-                <span>Время чтения: {{ $post->duration }} мин</span>
+                <span class="ui-chip">Post</span>
+                <span>Read time: {{ $post->duration }} min</span>
             </div>
             @if($post->preview_path)
                 <img class="mb-4 h-64 w-full rounded-lg object-cover" src="{{ asset('storage/' . $post->preview_path) }}" alt="{{ $post->title }}">

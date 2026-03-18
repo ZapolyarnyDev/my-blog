@@ -5,14 +5,14 @@
 @section('content')
     <div class="mx-auto max-w-5xl px-4 py-10">
         <div class="ui-toolbar mb-6 flex flex-wrap items-center justify-between gap-3">
-            <div class="text-lg font-semibold">Админка постов</div>
+            <div class="text-lg font-semibold">Posts Admin</div>
             <div class="flex flex-wrap gap-2">
-                <a class="ui-button" href="{{ route('admin.post.index') }}">Список</a>
-                <a class="ui-button-primary" href="{{ route('admin.post.create') }}">Добавить пост</a>
+                <a class="ui-button" href="{{ route('admin.post.index') }}">List</a>
+                <a class="ui-button-primary" href="{{ route('admin.post.create') }}">Add post</a>
             </div>
         </div>
 
-        <h1 class="mb-4 text-xl font-semibold">Все посты</h1>
+        <h1 class="mb-4 text-xl font-semibold">All posts</h1>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             @forelse($posts as $post)
@@ -29,8 +29,8 @@
                             {{ strtoupper(mb_substr($post->author->name ?? 'U', 0, 1)) }}
                         </div>
                     @endif
-                    <span>Автор: {{ $post->author->name }}</span>
-                    <span>Время чтения: {{ $post->duration }} мин</span>
+                    <span>Author: {{ $post->author->name }}</span>
+                    <span>Read time: {{ $post->duration }} min</span>
                 </div>
 
                 <h2 class="text-lg font-semibold">{{ $post->title }}</h2>
@@ -39,13 +39,13 @@
                 <form class="mt-3 flex flex-wrap gap-3" action="{{ route('admin.post.delete', ['post' => $post]) }}" method="POST">
                     @method('DELETE')
                     @csrf
-                    <button class="ui-button-danger" type="submit">Удалить</button>
-                    <a class="ui-button" href="{{ route('admin.post.edit', ['post' => $post]) }}">Изменить</a>
-                    <a class="ui-button" href="{{ route('admin.post.show', ['post' => $post]) }}">Открыть</a>
+                    <button class="ui-button-danger" type="submit">Delete</button>
+                    <a class="ui-button" href="{{ route('admin.post.edit', ['post' => $post]) }}">Edit</a>
+                    <a class="ui-button" href="{{ route('admin.post.show', ['post' => $post]) }}">Open</a>
                 </form>
             </article>
             @empty
-                <div class="ui-card text-center text-sm text-slate-600">Данных нет</div>
+                <div class="ui-card text-center text-sm text-slate-600">No data available</div>
             @endforelse
         </div>
     </div>
