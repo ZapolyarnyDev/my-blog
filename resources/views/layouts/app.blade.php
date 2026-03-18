@@ -9,6 +9,18 @@
 </head>
 <body class="bg-slate-50 text-slate-900 @yield('body_class')">
     <main class="min-h-screen">
+        @isset($header)
+            <header class="bg-white shadow">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endisset
+
+        @isset($slot)
+            {{ $slot }}
+        @endisset
+
         @yield('content')
     </main>
 </body>

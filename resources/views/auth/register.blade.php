@@ -45,6 +45,9 @@
                 fileName: '',
                 previewUrl: null,
                 clientError: '',
+                hintText: {{ \Illuminate\Support\Js::from(__('PNG, JPG or WEBP up to 2MB')) }},
+                invalidTypeText: {{ \Illuminate\Support\Js::from(__('Only JPG, PNG or WEBP images are allowed.')) }},
+                invalidSizeText: {{ \Illuminate\Support\Js::from(__('Avatar must be 2MB or less.')) }},
                 maxAvatarBytes: 2 * 1024 * 1024,
                 updateAvatar(event) {
                     const file = event.target.files[0] || null;
@@ -66,7 +69,7 @@
                         event.target.value = '';
                         this.fileName = '';
                         this.previewUrl = null;
-                        this.clientError = {{ \Illuminate\Support\Js::from(__('Only JPG, PNG or WEBP images are allowed.')) }};
+                        this.clientError = this.invalidTypeText;
                         return;
                     }
 
@@ -74,7 +77,7 @@
                         event.target.value = '';
                         this.fileName = '';
                         this.previewUrl = null;
-                        this.clientError = {{ \Illuminate\Support\Js::from(__('Avatar must be 2MB or less.')) }};
+                        this.clientError = this.invalidSizeText;
                         return;
                     }
 
@@ -110,7 +113,7 @@
                     <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">
                         {{ __('Choose avatar') }}
                     </span>
-                    <span class="block truncate text-xs text-gray-500 dark:text-gray-400" x-text="fileName || {{ \Illuminate\Support\Js::from(__('PNG, JPG or WEBP up to 2MB')) }}"></span>
+                    <span class="block truncate text-xs text-gray-500 dark:text-gray-400" x-text="fileName || hintText"></span>
                 </span>
             </label>
 

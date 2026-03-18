@@ -47,13 +47,90 @@
             @endif
         </div>
 
-        <div>
+        <div
+            x-data="{
+                fileName: '',
+                previewUrl: {{ \Illuminate\Support\Js::from($user->avatar_path ? asset('storage/' . $user->avatar_path) : null) }},
+                clientError: '',
+                hintText: {{ \Illuminate\Support\Js::from(__('PNG, JPG or WEBP up to 2MB')) }},
+                invalidTypeText: {{ \Illuminate\Support\Js::from(__('Only JPG, PNG or WEBP images are allowed.')) }},
+                invalidSizeText: {{ \Illuminate\Support\Js::from(__('Avatar must be 2MB or less.')) }},
+                maxAvatarBytes: 2 * 1024 * 1024,
+                updateAvatar(event) {
+                    const file = event.target.files[0] || null;
+
+                    if (this.previewUrl && this.previewUrl.startsWith('blob:')) {
+                        URL.revokeObjectURL(this.previewUrl);
+                    }
+
+                    if (!file) {
+                        this.fileName = '';
+                        this.clientError = '';
+                        return;
+                    }
+
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+                    if (!allowedTypes.includes(file.type)) {
+                        event.target.value = '';
+                        this.fileName = '';
+                        this.clientError = this.invalidTypeText;
+                        return;
+                    }
+
+                    if (file.size > this.maxAvatarBytes) {
+                        event.target.value = '';
+                        this.fileName = '';
+                        this.clientError = this.invalidSizeText;
+                        return;
+                    }
+
+                    this.clientError = '';
+                    this.fileName = file.name;
+                    this.previewUrl = URL.createObjectURL(file);
+                }
+            }"
+        >
             <x-input-label for="avatar" :value="__('Avatar (max 2MB)')" />
-            <input id="avatar" name="avatar" type="file" accept="image/*" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+
+            <div class="mt-2 flex items-center gap-4">
+                <div class="h-20 w-20 overflow-hidden rounded-full bg-gray-100 ring-2 ring-gray-200 dark:bg-gray-700 dark:ring-gray-600">
+                    <img x-show="previewUrl" :src="previewUrl" alt="{{ $user->name }}" class="h-full w-full object-cover">
+                    <div x-show="!previewUrl" class="flex h-full w-full items-center justify-center text-sm font-semibold text-gray-500 dark:text-gray-300">
+                        {{ strtoupper(mb_substr($user->name, 0, 1)) }}
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <input
+                        id="avatar"
+                        name="avatar"
+                        type="file"
+                        accept="image/*"
+                        class="sr-only"
+                        @change="updateAvatar($event)"
+                    />
+
+                    <label
+                        for="avatar"
+                        class="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-4 py-3 transition hover:border-indigo-500 hover:bg-indigo-50/30 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-400 dark:hover:bg-indigo-950/30"
+                    >
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M20 21a8 8 0 1 0-16 0"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <span class="min-w-0">
+                            <span class="block text-sm font-medium text-gray-900 dark:text-gray-100">{{ __('Choose new avatar') }}</span>
+                            <span class="block truncate text-xs text-gray-500 dark:text-gray-400" x-text="fileName || hintText"></span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <p x-show="clientError" x-text="clientError" class="mt-2 text-sm text-red-600 dark:text-red-400"></p>
             <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
-            @if ($user->avatar_path)
-                <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="{{ $user->name }}" class="mt-3 h-20 w-20 rounded-full object-cover" />
-            @endif
         </div>
 
         <div class="flex items-center gap-4">
