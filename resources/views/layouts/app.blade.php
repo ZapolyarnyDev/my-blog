@@ -31,6 +31,13 @@
                             Profile
                         </a>
 
+                        <a
+                            href="{{ route('posts.admin.index') }}"
+                            class="rounded-md px-3 py-1.5 transition {{ request()->routeIs('posts.admin.*') ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100' }}"
+                        >
+                            Admin posts
+                        </a>
+
                         @if (auth()->user()->hasAnyRole(['admin', 'editor']))
                             <a
                                 href="{{ route('admin.post.index') }}"

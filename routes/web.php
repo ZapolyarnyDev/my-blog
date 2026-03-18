@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\PostController;
+use App\Http\Controllers\PostFeedController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +13,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware('verified')->name('dashboard');
+
+    Route::get('/posts/admin', [PostFeedController::class, 'adminPosts'])
+        ->name('posts.admin.index');
 
     Route::prefix('/admin')->middleware(['role:admin,editor'])->group(function () {
         Route::prefix('posts')->name('admin.')->group(function () {
