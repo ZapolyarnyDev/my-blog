@@ -40,6 +40,10 @@
                             <span class="ui-chip">{{ $tag->name }}</span>
                         @endforeach
                     </div>
+
+                    <a href="{{ route('posts.admin.show', ['post' => $post]) }}" class="mt-4 inline-flex items-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                        Open post
+                    </a>
                 </article>
             @empty
                 <div class="ui-card col-span-full text-center text-sm text-slate-600">

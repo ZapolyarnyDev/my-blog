@@ -16,6 +16,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/posts/admin', [PostFeedController::class, 'adminPosts'])
         ->name('posts.admin.index');
+    Route::get('/posts/admin/{post}', [PostFeedController::class, 'showAdminPost'])
+        ->name('posts.admin.show');
+    Route::post('/posts/admin/{post}/comments', [PostFeedController::class, 'storeComment'])
+        ->name('posts.admin.comments.store');
 
     Route::prefix('/admin')->middleware(['role:admin,editor'])->group(function () {
         Route::prefix('posts')->name('admin.')->group(function () {
